@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx claude-channel-weixin *)",
+      "Bash(curl -s -X POST \"https://ilinkai.weixin.qq.com/ilink/bot/getupdates\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer 252aa5448aba@im.bot:0600007c1dae6fb21ee515cd91b50a716ed805\" -H \"AuthorizationType: ilink_bot_token\" -d '{\"timeout\":5}')",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); msgs=d.get\\('msgs',[]\\); print\\(f'Messages: {len\\(msgs\\)}'\\); [print\\(f'  From: {m[\\\\\"from_user_id\\\\\"]}, Text: {m[\\\\\"item_list\\\\\"][0][\\\\\"text_item\\\\\"][\\\\\"text\\\\\"]}, Token: {m[\\\\\"context_token\\\\\"][:40]}...'\\) for m in msgs]\")",
+      "Bash(curl -s -X POST \"https://ilinkai.weixin.qq.com/ilink/bot/getupdates\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer 252aa5448aba@im.bot:0600007c1dae6fb21ee515cd91b50a716ed805\" -H \"AuthorizationType: ilink_bot_token\" -d '{\"timeout\":10}')",
+      "Bash(ls /tmp/claude*)",
+      "Bash(ls /tmp/weixin*)",
+      "Bash(WEIXIN_DEBUG=1 node dist/server.js)",
+      "Bash(kill %1)",
+      "Bash(wait)",
+      "Read(//tmp/claude/**)",
+      "Read(//tmp/**)",
+      "mcp__plugin_weixin_weixin__send_typing",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); msgs=d.get\\('msgs',[]\\); print\\(f'msgs: {len\\(msgs\\)}'\\); [print\\(json.dumps\\({'text':m['item_list'][0]['text_item']['text'],'from':m['from_user_id'],'token':m['context_token'][:50]}\\)\\) for m in msgs]\")",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git config *)"
+    ]
+  }
+}
