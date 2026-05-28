@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Providers } from "@/components/layout/Providers";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -18,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="zh-CN" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
       <body className="min-h-screen bg-background font-sans antialiased">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
