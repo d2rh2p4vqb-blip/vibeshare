@@ -1,0 +1,37 @@
+"use client";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ProjectGrid } from "@/components/project/ProjectGrid";
+
+export default function DiscoverPage() {
+  const [q, setQ] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["search", searchQuery],
+    queryFn: () => fetch(`/api/search?q=${encodeURIComponent(searchQuery)}&type=projects`).then((r) => r.json()),
+    enabled: searchQuery.length > 0,
+  });
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <div className="flex gap-3 mb-8">
+        <Input placeholder="搜索作品..." value={q} onChange={(e) => setQ(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && setSearchQuery(q)} />
+        <Button onClick={() => setSearchQuery(q)}>搜索</Button>
+      </div>
+      {isLoading ? (
+        <div className="text-center py-20">搜索中...</div>
+      ) : data ? (
+        <>
+          <p className="text-muted-foreground mb-4">找到 {data.total} 个结果</p>
+          <ProjectGrid projects={data.results} />
+        </>
+      ) : (
+        <div className="text-center py-20 text-muted-foreground">输入关键词搜索作品</div>
+      )}
+    </div>
+  );
+}
