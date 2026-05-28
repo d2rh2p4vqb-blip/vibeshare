@@ -10,6 +10,7 @@ export function useChat(roomId: string) {
   useEffect(() => {
     let chat: any;
     let destroyed = false;
+    let currentUserId = '';
 
     async function init() {
       // Fetch history from our DB
@@ -20,23 +21,26 @@ export function useChat(roomId: string) {
       // Get UserSig
       const sigRes = await fetch('/api/tim/usersig');
       const { userId, userSig, sdkAppId } = await sigRes.json();
+      currentUserId = userId;
 
       // Init TIM SDK
       chat = TencentCloudChat.create({ SDKAppID: Number(sdkAppId) });
 
       chat.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, (event: any) => {
-        const newMsgs = event.data.map((msg: any) => ({
-          id: msg.ID,
-          content: msg.payload?.text || '',
-          createdAt: new Date(msg.time * 1000).toISOString(),
-          user: {
-            id: msg.from,
-            username: msg.nick || msg.from,
-            displayName: msg.nick || msg.from,
-            avatarUrl: msg.avatar || null,
-          },
-        }));
-        if (!destroyed) {
+        const newMsgs = event.data
+          .filter((msg: any) => msg.from !== currentUserId)
+          .map((msg: any) => ({
+            id: msg.ID,
+            content: msg.payload?.text || '',
+            createdAt: new Date(msg.time * 1000).toISOString(),
+            user: {
+              id: msg.from,
+              username: msg.nick || msg.from,
+              displayName: msg.nick || msg.from,
+              avatarUrl: msg.avatar || null,
+            },
+          }));
+        if (!destroyed && newMsgs.length > 0) {
           setMessages((prev) => [...prev, ...newMsgs].slice(-200));
         }
       });
@@ -82,13 +86,18 @@ export function useChat(roomId: string) {
   }, [roomId]);
 
   async function sendMessage(content: string) {
-    // Save to our DB and broadcast via TIM
     const res = await fetch(`/api/chat/rooms/${roomId}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),
     });
     const savedMsg = await res.json();
+    if (savedMsg.id) {
+      setMessages((prev) => {
+        if (prev.some(m => m.id === savedMsg.id)) return prev;
+        return [...prev, savedMsg].slice(-200);
+      });
+    }
     return savedMsg;
   }
 
