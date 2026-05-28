@@ -17,7 +17,21 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git config *)"
+      "Bash(git config *)",
+      "Bash(git *)",
+      "Bash(npm install *)",
+      "Bash(npx shadcn@latest init -d)",
+      "Bash(npx shadcn@latest add button input textarea dialog dropdown-menu avatar badge card tabs select separator sheet skeleton toast tooltip scroll-area)",
+      "Bash(npx shadcn@latest add button input textarea dialog dropdown-menu avatar badge card tabs select separator sheet skeleton tooltip scroll-area -y)",
+      "Bash(npx shadcn@latest add sonner -y)",
+      "Bash(npx prisma *)",
+      "Bash(openssl rand *)",
+      "Bash(npx next *)",
+      "Bash(npm ls *)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(npx playwright *)",
+      "Bash(vercel --version)"
     ]
   }
 }

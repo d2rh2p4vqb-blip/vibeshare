@@ -1,42 +1,96 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import Pusher from "pusher-js";
+import TencentCloudChat from '@tencentcloud/chat';
 
 export function useChat(roomId: string) {
   const [messages, setMessages] = useState<any[]>([]);
-  const pusherRef = useRef<Pusher | null>(null);
+  const [ready, setReady] = useState(false);
+  const chatRef = useRef<any>(null);
 
   useEffect(() => {
-    fetch(`/api/chat/rooms/${roomId}/messages`)
-      .then((r) => r.json())
-      .then(setMessages);
+    let chat: any;
+    let destroyed = false;
 
-    fetch(`/api/chat/rooms/${roomId}/join`, { method: "POST" });
+    async function init() {
+      // Fetch history from our DB
+      const res = await fetch(`/api/chat/rooms/${roomId}/messages`);
+      const history = await res.json();
+      if (!destroyed) setMessages(history);
 
-    const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY!, {
-      cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-    });
+      // Get UserSig
+      const sigRes = await fetch('/api/tim/usersig');
+      const { userId, userSig, sdkAppId } = await sigRes.json();
 
-    const channel = pusher.subscribe(`presence-room-${roomId}`);
-    channel.bind("new-message", (msg: any) => {
-      setMessages((prev) => [...prev, msg]);
-    });
+      // Init TIM SDK
+      chat = TencentCloudChat.create({ SDKAppID: Number(sdkAppId) });
 
-    pusherRef.current = pusher;
+      chat.on(TencentCloudChat.EVENT.MESSAGE_RECEIVED, (event: any) => {
+        const newMsgs = event.data.map((msg: any) => ({
+          id: msg.ID,
+          content: msg.payload?.text || '',
+          createdAt: new Date(msg.time * 1000).toISOString(),
+          user: {
+            id: msg.from,
+            username: msg.nick || msg.from,
+            displayName: msg.nick || msg.from,
+            avatarUrl: msg.avatar || null,
+          },
+        }));
+        if (!destroyed) {
+          setMessages((prev) => [...prev, ...newMsgs].slice(-200));
+        }
+      });
+
+      chat.on(TencentCloudChat.EVENT.MESSAGE_MODIFIED, (event: any) => {
+        // Handle edited messages if needed
+        console.log('Message modified:', event.data);
+      });
+
+      chat.on(TencentCloudChat.EVENT.CONVERSATION_LIST_UPDATED, () => {
+        // Optional: handle conversation updates
+      });
+
+      // Login to TIM
+      try {
+        await chat.login({ userID: userId, userSig });
+        // Join the group
+        try {
+          await chat.joinGroup({ groupID: roomId, type: TencentCloudChat.TYPES.GRP_AVCHATROOM });
+        } catch (e: any) {
+          // Group might not exist yet in TIM, ignore for now
+          console.log('Join group pending:', e.message);
+        }
+        if (!destroyed) setReady(true);
+      } catch (err) {
+        console.error('TIM login failed:', err);
+      }
+
+      // Notify our server
+      fetch(`/api/chat/rooms/${roomId}/join`, { method: 'POST' });
+    }
+
+    init();
+    chatRef.current = chat;
 
     return () => {
-      pusher.unsubscribe(`presence-room-${roomId}`);
-      fetch(`/api/chat/rooms/${roomId}/leave`, { method: "POST" });
+      destroyed = true;
+      if (chat) {
+        chat.logout();
+      }
+      fetch(`/api/chat/rooms/${roomId}/leave`, { method: 'POST' });
     };
   }, [roomId]);
 
   async function sendMessage(content: string) {
-    await fetch(`/api/chat/rooms/${roomId}/messages`, {
+    // Save to our DB and broadcast via TIM
+    const res = await fetch(`/api/chat/rooms/${roomId}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ content }),
     });
+    const savedMsg = await res.json();
+    return savedMsg;
   }
 
-  return { messages, sendMessage };
+  return { messages, sendMessage, ready };
 }

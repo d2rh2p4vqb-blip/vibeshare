@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.r2.cloudflarestorage.com",
+        hostname: "*.cos.ap-guangzhou.myqcloud.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.myqcloud.com",
       },
     ],
   },
