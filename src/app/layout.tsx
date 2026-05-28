@@ -1,25 +1,23 @@
 import type { Metadata } from "next";
 import { Providers } from "@/components/layout/Providers";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import "./globals.css";
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: "Vibecoding - AI作品分享社区",
-  description: "发现和分享 AI 辅助创作的作品",
+  title: "VibeShare - Vibecoding 作品分享社区",
+  description: "分享你用 AI 创造的作品，发现更多灵感",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-CN" suppressHydrationWarning className={cn("font-sans", geist.variable)}>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <Providers>{children}</Providers>
+    <html lang="zh-CN">
+      <body className="min-h-screen bg-background antialiased">
+        <Providers>
+          <Header />
+          <main className="max-w-7xl mx-auto px-4 py-8">{children}</main>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
