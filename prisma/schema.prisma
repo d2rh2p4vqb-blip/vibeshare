@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,183 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  email        String   @unique
+  passwordHash String
+  displayName  String?
+  bio          String?
+  avatarUrl    String?
+  githubUrl    String?
+  twitterUrl   String?
+  websiteUrl   String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  projects      Project[]
+  likes         Like[]
+  favorites     Favorite[]
+  comments      Comment[]
+  followers     Follow[]  @relation("Following")
+  following     Follow[]  @relation("Follower")
+  notifications Notification[]
+  chatMessages  ChatMessage[]
+  chatRooms     ChatRoom[]  @relation("RoomCreator")
+}
+
+model Project {
+  id            String     @id @default(cuid())
+  title         String
+  description   String
+  summary       String
+  type          ProjectType
+  category      String?
+  websiteUrl    String?
+  githubUrl     String?
+  tools         String[]
+  prompts       String?
+  thumbnailUrl  String?
+  screenshots   String[]
+  authorId      String
+  hotScore      Float      @default(0)
+  likeCount     Int        @default(0)
+  commentCount  Int        @default(0)
+  favoriteCount Int        @default(0)
+  viewCount     Int        @default(0)
+  status        ProjectStatus @default(PUBLISHED)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  author    User       @relation(fields: [authorId], references: [id])
+  likes     Like[]
+  favorites Favorite[]
+  comments  Comment[]
+
+  @@index([hotScore])
+  @@index([authorId])
+  @@index([status])
+}
+
+enum ProjectType {
+  WEBSITE
+  APP
+  TOOL
+  OTHER
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  projectId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id])
+  project Project @relation(fields: [projectId], references: [id])
+
+  @@unique([userId, projectId])
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Follower", fields: [followerId], references: [id])
+  following User @relation("Following", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  content   String
+  userId    String
+  projectId String
+  parentId  String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  project  Project   @relation(fields: [projectId], references: [id])
+  parent   Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentReplies")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      NotifType
+  message   String
+  isRead    Boolean  @default(false)
+  linkUrl   String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum NotifType {
+  LIKE
+  COMMENT
+  FOLLOW
+  FAVORITE
+}
+
+model ChatRoom {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  creatorId   String
+  isPublic    Boolean  @default(true)
+  memberCount Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  creator  User          @relation("RoomCreator", fields: [creatorId], references: [id])
+  messages ChatMessage[]
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  roomId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  room ChatRoom @relation(fields: [roomId], references: [id])
+  user User     @relation(fields: [userId], references: [id])
+
+  @@index([roomId, createdAt])
+}
+
+model LeaderboardSnapshot {
+  id        String   @id @default(cuid())
+  period    String
+  date      DateTime
+  rank      Int
+  projectId String
+  hotScore  Float
+
+  @@index([period, date])
 }
