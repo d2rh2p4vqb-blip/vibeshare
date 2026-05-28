@@ -1,5 +1,5 @@
 "use client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,10 +7,12 @@ import { Button } from "@/components/ui/button";
 import { formatNumber, timeAgo } from "@/lib/utils";
 import Link from "next/link";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
   const [comment, setComment] = useState("");
+  const queryClient = useQueryClient();
 
   const { data: project, isLoading } = useQuery({
     queryKey: ["project", params.id],
@@ -30,11 +32,17 @@ export default function ProjectDetailPage() {
   });
 
   async function handleLike() {
-    await fetch(`/api/projects/${params.id}/like`, { method: "POST" });
+    const res = await fetch(`/api/projects/${params.id}/like`, { method: "POST" });
+    const data = await res.json();
+    queryClient.invalidateQueries({ queryKey: ["project", params.id] });
+    toast(data.liked ? "已点赞" : "已取消点赞");
   }
 
   async function handleFavorite() {
-    await fetch(`/api/projects/${params.id}/favorite`, { method: "POST" });
+    const res = await fetch(`/api/projects/${params.id}/favorite`, { method: "POST" });
+    const data = await res.json();
+    queryClient.invalidateQueries({ queryKey: ["project", params.id] });
+    toast(data.favorited ? "已收藏" : "已取消收藏");
   }
 
   async function handleComment() {
@@ -46,6 +54,8 @@ export default function ProjectDetailPage() {
     });
     setComment("");
     refetchComments();
+    queryClient.invalidateQueries({ queryKey: ["project", params.id] });
+    toast.success("评论已发布");
   }
 
   if (isLoading) return <div className="text-center py-20">加载中...</div>;

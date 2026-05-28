@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import { useState, useRef } from "react";
+import { X, Plus, Upload } from "lucide-react";
 
 const projectSchema = z.object({
   title: z.string().min(1, "必填").max(100),
@@ -25,6 +27,15 @@ type ProjectFormData = z.infer<typeof projectSchema>;
 const TOOL_OPTIONS = ["Claude", "Cursor", "v0", "Bolt", "Replit", "GitHub Copilot", "ChatGPT", "Windsurf", "Lovable", "其他"];
 const CATEGORY_OPTIONS = ["效率工具", "AI应用", "游戏", "设计", "网站", "小程序", "开源项目", "其他"];
 
+async function uploadFile(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch("/api/upload", { method: "POST", body: formData });
+  if (!res.ok) throw new Error("上传失败");
+  const data = await res.json();
+  return data.url;
+}
+
 export function ProjectForm() {
   const router = useRouter();
   const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<ProjectFormData>({
@@ -32,11 +43,50 @@ export function ProjectForm() {
     defaultValues: { type: "WEBSITE", tools: "", category: "" },
   });
 
+  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [thumbnailUploading, setThumbnailUploading] = useState(false);
+  const [screenshots, setScreenshots] = useState<string[]>([]);
+  const [screenshotsUploading, setScreenshotsUploading] = useState(false);
+  const thumbnailInputRef = useRef<HTMLInputElement>(null);
+  const screenshotInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleThumbnailUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setThumbnailUploading(true);
+    try {
+      const url = await uploadFile(file);
+      setThumbnail(url);
+    } catch { /* ignore */ }
+    setThumbnailUploading(false);
+  }
+
+  async function handleScreenshotUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setScreenshotsUploading(true);
+    try {
+      const urls = await Promise.all(Array.from(files).map(uploadFile));
+      setScreenshots(prev => [...prev, ...urls]);
+    } catch { /* ignore */ }
+    setScreenshotsUploading(false);
+    if (screenshotInputRef.current) screenshotInputRef.current.value = "";
+  }
+
+  function removeScreenshot(index: number) {
+    setScreenshots(prev => prev.filter((_, i) => i !== index));
+  }
+
   async function onSubmit(data: ProjectFormData) {
     const res = await fetch("/api/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, tools: data.tools.split(",").map((t) => t.trim()).filter(Boolean) }),
+      body: JSON.stringify({
+        ...data,
+        tools: data.tools.split(",").map((t) => t.trim()).filter(Boolean),
+        thumbnailUrl: thumbnail,
+        screenshots,
+      }),
     });
     if (res.ok) {
       const project = await res.json();
@@ -82,6 +132,76 @@ export function ProjectForm() {
               {CATEGORY_OPTIONS.map((c) => <SelectItem key={c} value={c}>{c}</SelectItem>)}
             </SelectContent>
           </Select>
+        </div>
+      </div>
+
+      {/* Thumbnail upload */}
+      <div>
+        <label className="text-sm font-medium mb-2 block">封面图片</label>
+        <input
+          ref={thumbnailInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleThumbnailUpload}
+          className="hidden"
+        />
+        {thumbnail ? (
+          <div className="relative inline-block">
+            <img src={thumbnail} alt="封面" className="h-32 w-auto rounded-lg object-cover border" />
+            <button
+              type="button"
+              onClick={() => setThumbnail(null)}
+              className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-0.5"
+            >
+              <X className="size-3" />
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => thumbnailInputRef.current?.click()}
+            disabled={thumbnailUploading}
+            className="flex items-center gap-2 border-2 border-dashed rounded-lg p-6 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+          >
+            <Upload className="size-4" />
+            {thumbnailUploading ? "上传中..." : "点击上传封面图"}
+          </button>
+        )}
+      </div>
+
+      {/* Screenshots upload */}
+      <div>
+        <label className="text-sm font-medium mb-2 block">截图 (可选多张)</label>
+        <input
+          ref={screenshotInputRef}
+          type="file"
+          accept="image/*"
+          multiple
+          onChange={handleScreenshotUpload}
+          className="hidden"
+        />
+        <div className="flex flex-wrap gap-3">
+          {screenshots.map((url, i) => (
+            <div key={i} className="relative">
+              <img src={url} alt={`截图 ${i + 1}`} className="h-24 w-auto rounded-lg object-cover border" />
+              <button
+                type="button"
+                onClick={() => removeScreenshot(i)}
+                className="absolute -top-2 -right-2 bg-destructive text-white rounded-full p-0.5"
+              >
+                <X className="size-3" />
+              </button>
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={() => screenshotInputRef.current?.click()}
+            disabled={screenshotsUploading}
+            className="flex items-center gap-2 border-2 border-dashed rounded-lg p-6 h-24 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+          >
+            <Plus className="size-4" />
+            {screenshotsUploading ? "上传中..." : "添加截图"}
+          </button>
         </div>
       </div>
 

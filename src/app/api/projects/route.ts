@@ -59,6 +59,8 @@ export async function POST(req: NextRequest) {
       githubUrl: body.githubUrl || null,
       tools: body.tools || [],
       prompts: body.prompts || null,
+      thumbnailUrl: body.thumbnailUrl || null,
+      screenshots: body.screenshots || [],
       authorId: session.user.id!,
     },
     include: {
