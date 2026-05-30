@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,13 +11,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Sun, Moon, Monitor } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { theme, setTheme } = useTheme();
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const ThemeIcon = mounted
+    ? theme === "dark"
+      ? Moon
+      : theme === "light"
+        ? Sun
+        : Monitor
+    : Monitor;
 
   return (
-    <header className="border-b sticky top-0 bg-white z-50">
+    <header className="border-b sticky top-0 bg-background z-50">
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="text-xl font-bold text-primary">
@@ -30,6 +44,16 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-3">
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              aria-label="切换主题"
+            >
+              <ThemeIcon className="h-4 w-4" />
+            </Button>
+          )}
           <Button variant="outline" size="sm" onClick={() => router.push("/submit")}>
             提交作品
           </Button>
