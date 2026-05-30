@@ -1,16 +1,20 @@
 "use client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { formatNumber, timeAgo } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Pencil } from "lucide-react";
 
 export default function ProjectDetailPage() {
   const params = useParams<{ id: string }>();
+  const { user, isAuthenticated } = useAuth();
+  const router = useRouter();
   const [comment, setComment] = useState("");
   const queryClient = useQueryClient();
 
@@ -86,6 +90,11 @@ export default function ProjectDetailPage() {
           <Button variant="outline" size="sm" onClick={handleLike}>❤️ {formatNumber(project.likeCount)}</Button>
           <Button variant="outline" size="sm" onClick={handleFavorite}>⭐ {formatNumber(project.favoriteCount)}</Button>
           <span className="text-sm text-muted-foreground flex items-center">👁️ {formatNumber(project.viewCount)} 次浏览</span>
+          {isAuthenticated && user?.id === project.authorId && (
+            <Button variant="ghost" size="sm" onClick={() => router.push(`/projects/${project.id}/edit`)}>
+              <Pencil className="size-4 mr-1" /> 编辑
+            </Button>
+          )}
         </div>
       </div>
 

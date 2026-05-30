@@ -36,16 +36,46 @@ async function uploadFile(file: File): Promise<string> {
   return data.url;
 }
 
-export function ProjectForm() {
+interface ProjectFormProps {
+  project?: {
+    id: string;
+    title: string;
+    summary: string;
+    description: string;
+    type: string;
+    category: string | null;
+    websiteUrl: string | null;
+    githubUrl: string | null;
+    tools: string[];
+    prompts: string | null;
+    thumbnailUrl: string | null;
+    screenshots: string[];
+  } | null;
+}
+
+export function ProjectForm({ project }: ProjectFormProps = {}) {
   const router = useRouter();
+  const isEdit = !!project;
   const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm<ProjectFormData>({
     resolver: zodResolver(projectSchema),
-    defaultValues: { type: "WEBSITE", tools: "", category: "" },
+    defaultValues: project
+      ? {
+          title: project.title,
+          summary: project.summary,
+          description: project.description,
+          type: project.type as ProjectFormData["type"],
+          category: project.category || "",
+          websiteUrl: project.websiteUrl || "",
+          githubUrl: project.githubUrl || "",
+          tools: project.tools.join(", "),
+          prompts: project.prompts || "",
+        }
+      : { type: "WEBSITE", tools: "", category: "" },
   });
 
-  const [thumbnail, setThumbnail] = useState<string | null>(null);
+  const [thumbnail, setThumbnail] = useState<string | null>(project?.thumbnailUrl || null);
   const [thumbnailUploading, setThumbnailUploading] = useState(false);
-  const [screenshots, setScreenshots] = useState<string[]>([]);
+  const [screenshots, setScreenshots] = useState<string[]>(project?.screenshots || []);
   const [screenshotsUploading, setScreenshotsUploading] = useState(false);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
   const screenshotInputRef = useRef<HTMLInputElement>(null);
@@ -78,8 +108,10 @@ export function ProjectForm() {
   }
 
   async function onSubmit(data: ProjectFormData) {
-    const res = await fetch("/api/projects", {
-      method: "POST",
+    const url = isEdit ? `/api/projects/${project!.id}` : "/api/projects";
+    const method = isEdit ? "PATCH" : "POST";
+    const res = await fetch(url, {
+      method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...data,
@@ -89,14 +121,14 @@ export function ProjectForm() {
       }),
     });
     if (res.ok) {
-      const project = await res.json();
-      router.push(`/projects/${project.id}`);
+      const result = await res.json();
+      router.push(`/projects/${result.id}`);
     }
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold">提交作品</h1>
+      <h1 className="text-2xl font-bold">{isEdit ? "编辑作品" : "提交作品"}</h1>
 
       <div>
         <Input placeholder="作品名称" {...register("title")} />
@@ -224,7 +256,7 @@ export function ProjectForm() {
       </div>
 
       <Button type="submit" disabled={isSubmitting} className="w-full">
-        {isSubmitting ? "提交中..." : "发布作品"}
+        {isSubmitting ? "保存中..." : isEdit ? "保存修改" : "发布作品"}
       </Button>
     </form>
   );
