@@ -128,7 +128,7 @@ export function Header() {
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle className="text-left text-primary">VibeShare</SheetTitle>
+                <SheetTitle className="text-left text-foreground">VibeShare</SheetTitle>
               </SheetHeader>
               <div className="flex flex-col gap-1 mt-6">
                 {NAV_LINKS.map((link) => (

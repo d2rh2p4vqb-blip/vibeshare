@@ -193,7 +193,7 @@ export function ProjectForm({ project }: ProjectFormProps = {}) {
             type="button"
             onClick={() => thumbnailInputRef.current?.click()}
             disabled={thumbnailUploading}
-            className="flex items-center gap-2 border-2 border-dashed rounded-lg p-6 text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+            className="flex items-center gap-2 border-2 border-dashed rounded-lg p-6 text-muted-foreground hover:border-foreground hover:text-foreground transition-colors"
           >
             <Upload className="size-4" />
             {thumbnailUploading ? "上传中..." : "点击上传封面图"}

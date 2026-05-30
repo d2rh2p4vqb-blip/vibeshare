@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { ProjectGrid } from "@/components/project/ProjectGrid";
 
 export default function DiscoverPage() {
