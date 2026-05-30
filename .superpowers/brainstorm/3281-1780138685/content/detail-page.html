@@ -1,0 +1,71 @@
+<h2>Project Detail Page</h2>
+<p class="subtitle">Clean reading layout · Focus on content</p>
+
+<div style="background:#fafafa;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;">
+  <!-- Header bar -->
+  <div style="padding:12px 24px;background:#fff;border-bottom:1px solid #f4f4f5;display:flex;justify-content:space-between;align-items:center;">
+    <div style="font-weight:700;font-size:16px;color:#09090b;">VibeShare</div>
+    <div style="display:flex;gap:8px;">
+      <div style="padding:6px 16px;background:#09090b;color:#fafafa;border-radius:999px;font-size:13px;">提交作品</div>
+    </div>
+  </div>
+  <!-- Content -->
+  <div style="max-width:720px;margin:0 auto;padding:48px 24px;">
+    <!-- Breadcrumb -->
+    <div style="color:#71717a;font-size:13px;margin-bottom:24px;">
+      ← 返回作品列表
+    </div>
+    <!-- Title -->
+    <h1 style="font-size:32px;font-weight:600;color:#09090b;letter-spacing:-0.02em;margin-bottom:8px;">
+      AI 音乐生成器
+    </h1>
+    <p style="color:#52525b;font-size:16px;margin-bottom:24px;line-height:1.5;">
+      输入歌词和风格偏好，AI 自动生成完整歌曲，支持多种流派
+    </p>
+    <!-- Meta row -->
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid #f4f4f5;">
+      <div style="display:flex;gap:4px;">
+        <span style="padding:2px 8px;background:#f4f4f5;border-radius:6px;font-size:11px;color:#52525b;">Claude</span>
+        <span style="padding:2px 8px;background:#f4f4f5;border-radius:6px;font-size:11px;color:#52525b;">Suno</span>
+        <span style="padding:2px 8px;background:#f4f4f5;border-radius:6px;font-size:11px;color:#52525b;">Vercel</span>
+      </div>
+      <span style="color:#a1a1aa;font-size:13px;">2 小时前</span>
+    </div>
+    <!-- Action buttons -->
+    <div style="display:flex;gap:8px;margin-bottom:32px;">
+      <div style="padding:8px 18px;border:1px solid #e5e5e5;border-radius:999px;font-size:13px;color:#52525b;display:flex;align-items:center;gap:6px;">
+        <span>▲</span> 128 <span>点赞</span>
+      </div>
+      <div style="padding:8px 18px;border:1px solid #e5e5e5;border-radius:999px;font-size:13px;color:#52525b;display:flex;align-items:center;gap:6px;">
+        <span>★</span> 收藏
+      </div>
+      <div style="padding:8px 18px;border:1px solid #e5e5e5;border-radius:999px;font-size:13px;color:#52525b;">
+        访问作品 →
+      </div>
+    </div>
+    <!-- Description -->
+    <div style="color:#3f3f46;font-size:15px;line-height:1.7;">
+      <p style="margin-bottom:16px;">这是一个基于 Claude Sonnet 和 Suno API 的 AI 音乐生成工具。用户可以输入歌词、选择音乐风格（流行、摇滚、电子、古典等），系统会自动生成带有完整编曲的歌曲。</p>
+      <p style="margin-bottom:16px;">项目使用 Next.js 构建前端，通过 Vercel 部署，后端调用多个 AI 模型 API 实现从文字到音乐的完整转换流程。</p>
+    </div>
+    <!-- Prompt section -->
+    <div style="margin-top:32px;padding:20px;background:#fff;border:1px solid #e5e5e5;border-radius:12px;">
+      <div style="color:#71717a;font-size:11px;letter-spacing:1px;margin-bottom:8px;">创作 PROMPT</div>
+      <code style="color:#3f3f46;font-size:13px;line-height:1.6;">
+        Build a music generation app. Users input lyrics + genre. The app calls Suno API with a structured prompt combining: mood analysis from Claude, genre classification, and lyrical structure. Output: full song with cover art.
+      </code>
+    </div>
+    <!-- Comments -->
+    <div style="margin-top:32px;">
+      <h3 style="font-size:18px;font-weight:600;color:#09090b;margin-bottom:16px;">评论 (3)</h3>
+      <div style="padding:16px;background:#fff;border:1px solid #e5e5e5;border-radius:12px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <div style="width:24px;height:24px;background:#09090b;border-radius:50%;"></div>
+          <span style="font-weight:500;font-size:13px;color:#09090b;">音乐爱好者</span>
+          <span style="font-size:12px;color:#a1a1aa;">· 1h 前</span>
+        </div>
+        <p style="font-size:13px;color:#52525b;line-height:1.5;">这个项目太棒了！生成的音乐质量出乎意料的好。</p>
+      </div>
+    </div>
+  </div>
+</div>

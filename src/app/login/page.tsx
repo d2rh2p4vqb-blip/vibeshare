@@ -38,12 +38,16 @@ export default function LoginPage() {
             <Input type="email" placeholder="邮箱" value={email} onChange={(e) => setEmail(e.target.value)} required />
             <Input type="password" placeholder="密码" value={password} onChange={(e) => setPassword(e.target.value)} required />
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "登录中..." : "登录"}
-            </Button>
+            <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+          >
+            {loading ? "登录中..." : "登录"}
+          </button>
           </form>
           <p className="text-center text-sm mt-4">
-            还没有账号？<Link href="/register" className="text-blue-600 hover:underline">注册</Link>
+            还没有账号？<Link href="/register" className="text-foreground font-medium hover:underline">注册</Link>
           </p>
         </CardContent>
       </Card>

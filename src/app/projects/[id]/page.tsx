@@ -86,14 +86,27 @@ export default function ProjectDetailPage() {
         <div className="flex items-center gap-2 mb-4">
           {project.tools.map((tool: string) => <Badge key={tool} variant="secondary">{tool}</Badge>)}
         </div>
-        <div className="flex gap-3">
-          <Button variant="outline" size="sm" onClick={handleLike}>❤️ {formatNumber(project.likeCount)}</Button>
-          <Button variant="outline" size="sm" onClick={handleFavorite}>⭐ {formatNumber(project.favoriteCount)}</Button>
+        <div className="flex gap-3 flex-wrap">
+          <button
+            onClick={handleLike}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-all"
+          >
+            ▲ {formatNumber(project.likeCount)} <span className="hidden sm:inline">点赞</span>
+          </button>
+          <button
+            onClick={handleFavorite}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-all"
+          >
+            ★ <span className="hidden sm:inline">收藏</span>
+          </button>
           <span className="text-sm text-muted-foreground flex items-center">👁️ {formatNumber(project.viewCount)} 次浏览</span>
           {isAuthenticated && user?.id === project.authorId && (
-            <Button variant="ghost" size="sm" onClick={() => router.push(`/projects/${project.id}/edit`)}>
-              <Pencil className="size-4 mr-1" /> 编辑
-            </Button>
+            <button
+              onClick={() => router.push(`/projects/${project.id}/edit`)}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-all"
+            >
+              <Pencil className="size-4" /> 编辑
+            </button>
           )}
         </div>
       </div>
@@ -106,10 +119,14 @@ export default function ProjectDetailPage() {
 
       <div className="flex gap-3 mb-8">
         {project.websiteUrl && (
-          <Button variant="outline" onClick={() => window.open(project.websiteUrl)}>🔗 访问作品</Button>
+          <a href={project.websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-all">
+            ↗ 访问作品
+          </a>
         )}
         {project.githubUrl && (
-          <Button variant="outline" onClick={() => window.open(project.githubUrl)}>📦 查看源码</Button>
+          <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border text-sm text-muted-foreground hover:border-foreground hover:text-foreground transition-all">
+            ⌘ 查看源码
+          </a>
         )}
       </div>
 

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { formatNumber, timeAgo } from "@/lib/utils";
 
 interface ProjectCardProps {
@@ -22,7 +21,7 @@ interface ProjectCardProps {
 export function ProjectCard({ project }: ProjectCardProps) {
   return (
     <Link href={`/projects/${project.id}`}>
-      <Card className="hover:shadow-md transition-shadow h-full">
+      <Card className="border border-border shadow-none hover:-translate-y-0.5 hover:shadow-[0_4px_12px_rgba(0,0,0,0.06)] hover:border-foreground/20 transition-all duration-200 h-full">
         {project.thumbnailUrl && (
           <img
             src={project.thumbnailUrl}
@@ -34,12 +33,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-2">
             <h3 className="font-semibold text-lg leading-tight">{project.title}</h3>
-            <Badge variant="secondary" className="text-xs shrink-0 ml-2">{project.type}</Badge>
+            <span className="text-xs text-muted-foreground shrink-0 ml-2">{project.type}</span>
           </div>
           <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{project.summary}</p>
           <div className="flex flex-wrap gap-1 mb-3">
             {project.tools.slice(0, 4).map((tool) => (
-              <Badge key={tool} variant="outline" className="text-xs">{tool}</Badge>
+              <span key={tool} className="px-2 py-0.5 bg-muted text-muted-foreground rounded-md text-xs">{tool}</span>
             ))}
           </div>
           <div className="flex items-center justify-between text-xs text-muted-foreground">

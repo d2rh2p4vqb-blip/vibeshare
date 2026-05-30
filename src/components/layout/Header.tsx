@@ -49,7 +49,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Left: Logo + Desktop Nav */}
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-xl font-bold text-primary">
+          <Link href="/" className="text-lg font-semibold tracking-tight text-foreground">
             VibeShare
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -78,7 +78,11 @@ export function Header() {
 
           {/* Desktop: Submit + Auth */}
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => router.push("/submit")}>
+            <Button
+              size="sm"
+              className="rounded-full px-5 bg-foreground text-background hover:bg-foreground/90"
+              onClick={() => router.push("/submit")}
+            >
               提交作品
             </Button>
             {isLoading ? null : isAuthenticated ? (

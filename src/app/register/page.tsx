@@ -47,12 +47,16 @@ export default function RegisterPage() {
             <Input type="email" placeholder="邮箱" value={form.email} onChange={(e) => update("email", e.target.value)} required />
             <Input type="password" placeholder="密码 (至少8位)" value={form.password} onChange={(e) => update("password", e.target.value)} required />
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "注册中..." : "注册"}
-            </Button>
+            <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+          >
+            {loading ? "注册中..." : "注册"}
+          </button>
           </form>
           <p className="text-center text-sm mt-4">
-            已有账号？<Link href="/login" className="text-blue-600 hover:underline">登录</Link>
+            已有账号？<Link href="/login" className="text-foreground font-medium hover:underline">登录</Link>
           </p>
         </CardContent>
       </Card>

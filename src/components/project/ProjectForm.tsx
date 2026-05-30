@@ -255,9 +255,13 @@ export function ProjectForm({ project }: ProjectFormProps = {}) {
         <p className="text-xs text-muted-foreground mt-1">分享 Prompt 可以帮助其他人学习你的创作思路</p>
       </div>
 
-      <Button type="submit" disabled={isSubmitting} className="w-full">
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full py-3 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-opacity"
+      >
         {isSubmitting ? "保存中..." : isEdit ? "保存修改" : "发布作品"}
-      </Button>
+      </button>
     </form>
   );
 }

@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/ui/button";
 
 interface HotTabsProps {
   value: string;
@@ -9,11 +8,19 @@ interface HotTabsProps {
 
 export function HotTabs({ value, onChange, options }: HotTabsProps) {
   return (
-    <div className="flex gap-2">
+    <div className="inline-flex gap-0.5 bg-muted p-1 rounded-xl">
       {options.map((opt) => (
-        <Button key={opt.value} variant={value === opt.value ? "default" : "outline"} size="sm" onClick={() => onChange(opt.value)}>
+        <button
+          key={opt.value}
+          onClick={() => onChange(opt.value)}
+          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            value === opt.value
+              ? "bg-foreground text-background"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
           {opt.label}
-        </Button>
+        </button>
       ))}
     </div>
   );

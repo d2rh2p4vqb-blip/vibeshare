@@ -1,0 +1,88 @@
+<h2>VibeShare UI Redesign — Design Direction</h2>
+<p class="subtitle">Modern minimalist · Black/White/Gray · Single accent color</p>
+
+<div class="section">
+  <h3>Pick your accent color</h3>
+</div>
+
+<div class="options" data-multiselect>
+  <div class="option" data-choice="slate" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Slate / Cool Gray</h3>
+      <p>Most restrained. Linear-style, almost monochrome. The "no design" design.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="zinc" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Zinc / Neutral</h3>
+      <p>Warm gray. More approachable. Vercel-style, subtle warmth without color.</p>
+    </div>
+  </div>
+  <div class="option" data-choice="blue" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Indigo / Blue accent</h3>
+      <p>Trustworthy & technical. Stripe-style, single blue accent on grayscale base.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Visual Style Preview</h3>
+  <p class="subtitle">Homepage hero — before vs after</p>
+</div>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Current</div>
+    <div class="mockup-body" style="background:#fff;padding:40px 20px;text-align:center;border-radius:8px;">
+      <div style="font-size:18px;color:#7c3aed;margin-bottom:8px;font-weight:700;">VibeShare</div>
+      <h1 style="font-size:28px;font-weight:700;color:#111;margin-bottom:8px;">发现 Vibecoding 佳作</h1>
+      <p style="color:#666;font-size:16px;margin-bottom:16px;">看看大家都用 AI 创造了什么</p>
+      <div style="display:flex;justify-content:center;gap:8px;">
+        <div style="padding:6px 16px;background:#7c3aed;color:#fff;border-radius:8px;font-size:14px;">热门</div>
+        <div style="padding:6px 16px;background:#f3f4f6;color:#333;border-radius:8px;font-size:14px;">最新</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Proposed — Zinc + Slate</div>
+    <div class="mockup-body" style="background:#fafafa;padding:40px 20px;text-align:center;border-radius:8px;border:1px solid #e5e5e5;">
+      <div style="display:inline-block;padding:4px 12px;background:#18181b;color:#fff;border-radius:999px;font-size:12px;font-weight:600;letter-spacing:1px;margin-bottom:24px;text-transform:uppercase;">VibeShare</div>
+      <h1 style="font-size:36px;font-weight:600;color:#09090b;margin-bottom:8px;letter-spacing:-0.02em;line-height:1.2;">分享 Vibecoding 创作</h1>
+      <p style="color:#71717a;font-size:16px;margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto;">AI 创作的灵感在这里汇聚，发现最棒的作品</p>
+      <div style="display:inline-flex;gap:2px;background:#e5e5e5;padding:4px;border-radius:12px;">
+        <div style="padding:8px 20px;background:#09090b;color:#fff;border-radius:10px;font-size:14px;font-weight:500;">发现</div>
+        <div style="padding:8px 20px;background:transparent;color:#52525b;border-radius:10px;font-size:14px;">排行榜</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Core Changes</h3>
+</div>
+
+<div class="pros-cons">
+  <div class="pros"><h4>What changes</h4>
+    <ul>
+      <li>Purple → Zinc/Slate grayscale base</li>
+      <li>White bg → subtle #fafafa background</li>
+      <li>Rounded-lg buttons → pill-shaped, high-contrast</li>
+      <li>Card shadows → hairline borders (#e5e5e5)</li>
+      <li>Typography: Inter, tighter leading, cleaner hierarchy</li>
+    </ul>
+  </div>
+  <div class="cons"><h4>What stays</h4>
+    <ul>
+      <li>Same page structure & routes</li>
+      <li>Same component tree (shadcn/ui)</li>
+      <li>Same data model & APIs</li>
+      <li>Dark mode still supported</li>
+      <li>Tailwind CSS (just new tokens)</li>
+    </ul>
+  </div>
+</div>
