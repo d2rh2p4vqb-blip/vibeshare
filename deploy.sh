@@ -32,7 +32,7 @@ tar czf - \
 # 2. 安装依赖(如有新增)
 echo "[2/4] 检查依赖..."
 ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no $SERVER \
-    "cd $APP_DIR && npm install --production 2>&1 | tail -3"
+    "cd $APP_DIR && npm install 2>&1 | tail -3"
 
 # 3. 生成 Prisma 客户端
 echo "[3/4] 生成 Prisma 客户端..."
