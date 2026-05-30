@@ -8,10 +8,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const { register, handleSubmit } = useForm();
 
+  if (isLoading) return null;
   if (!isAuthenticated) { router.push("/login"); return null; }
 
   async function onSubmit(data: any) {
