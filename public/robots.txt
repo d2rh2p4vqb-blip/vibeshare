@@ -1,0 +1,7 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /settings
+Disallow: /notifications
+
+Sitemap: https://vibeshare.com.cn/sitemap.xml

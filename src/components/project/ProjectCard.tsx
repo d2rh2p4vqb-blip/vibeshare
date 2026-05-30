@@ -24,7 +24,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <Link href={`/projects/${project.id}`}>
       <Card className="hover:shadow-md transition-shadow h-full">
         {project.thumbnailUrl && (
-          <img src={project.thumbnailUrl} alt={project.title} className="w-full h-40 object-cover rounded-t-xl" />
+          <img
+            src={project.thumbnailUrl}
+            alt={project.title}
+            loading="lazy"
+            className="w-full h-40 object-cover rounded-t-xl bg-muted"
+          />
         )}
         <CardContent className="p-4">
           <div className="flex items-start justify-between mb-2">
